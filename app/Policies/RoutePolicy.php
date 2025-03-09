@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Route;
+use App\Models\Route; // Ensure this class exists in the specified namespace
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 

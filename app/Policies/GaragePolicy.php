@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Garage;
+use App\Models\Garage; // Ensure that this class exists in the specified namespace
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 

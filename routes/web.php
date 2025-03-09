@@ -6,21 +6,24 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\AuthController;
 
+// الصفحة الرئيسية
 Route::get('/', function () {
-    return auth()->check() ? redirect('/dashboard') : view('login');
-})->name('home');
-
-Route::prefix('ships')->middleware('auth')->group(function () {
-    Route::get('/', [ShipController::class, 'index'])->name('ships.index');
-    Route::post('/', [ShipController::class, 'store'])->name('ships.store');
-    Route::get('/create', [ShipController::class, 'create'])->name('ships.create');
-    Route::get('/{ship}', [ShipController::class, 'show'])->name('ships.show');
-    Route::put('/{ship}', [ShipController::class, 'update'])->name('ships.update');
-    Route::delete('/{ship}', [ShipController::class, 'destroy'])->name('ships.destroy');
-    Route::get('/{ship}/edit', [ShipController::class, 'edit'])->name('ships.edit');
+    return view('login');
 });
 
-Route::prefix('bookings')->middleware('auth')->group(function () {
+// **مسارات السفن (Ships)**
+Route::prefix('ships')->group(function () {
+    Route::get('/', [ShipController::class, 'index'])->name('web.ships.index'); // تغيير الاسم لتجنب التعارض
+    Route::post('/', [ShipController::class, 'store'])->name('web.ships.store');
+    Route::get('/create', [ShipController::class, 'create'])->name('web.ships.create');
+    Route::get('/{ship}', [ShipController::class, 'show'])->name('web.ships.show');
+    Route::put('/{ship}', [ShipController::class, 'update'])->name('web.ships.update');
+    Route::delete('/{ship}', [ShipController::class, 'destroy'])->name('web.ships.destroy');
+    Route::get('/{ship}/edit', [ShipController::class, 'edit'])->name('web.ships.edit');
+});
+
+// **مسارات الحجوزات (Bookings)**
+Route::prefix('bookings')->group(function () {
     Route::get('/', [BookingController::class, 'index'])->name('bookings.index');
     Route::post('/', [BookingController::class, 'store'])->name('bookings.store');
     Route::get('/create', [BookingController::class, 'create'])->name('bookings.create');
@@ -30,7 +33,8 @@ Route::prefix('bookings')->middleware('auth')->group(function () {
     Route::get('/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
 });
 
-Route::prefix('trips')->middleware('auth')->group(function () {
+// **مسارات الرحلات (Trips)**
+Route::prefix('trips')->group(function () {
     Route::get('/', [TripController::class, 'index'])->name('trips.index');
     Route::post('/', [TripController::class, 'store'])->name('trips.store');
     Route::get('/create', [TripController::class, 'create'])->name('trips.create');
@@ -39,3 +43,11 @@ Route::prefix('trips')->middleware('auth')->group(function () {
     Route::delete('/{trip}', [TripController::class, 'destroy'])->name('trips.destroy');
     Route::get('/{trip}/edit', [TripController::class, 'edit'])->name('trips.edit');
 });
+
+// **مصادقة المستخدم (Authentication)**
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
+Route::post('/register', [AuthController::class, 'register'])->name('register');

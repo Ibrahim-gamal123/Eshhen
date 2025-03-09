@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Schedule;
+use App\Models\Schedule; // Ensure this class exists in the specified namespace or update the namespace accordingly
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
