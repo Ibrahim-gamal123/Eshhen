@@ -16,16 +16,20 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('phone'); 
+            $table->string('phone'); // يفضل أن يكون `string` بدلاً من `integer`
             $table->timestamps();
+        
         });
     }
 
-    public function down(): void
-    {
-        Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('clients');
-        Schema::enableForeignKeyConstraints(); 
-    }
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+{
+    Schema::disableForeignKeyConstraints();
+    Schema::dropIfExists('clients');
+    Schema::enableForeignKeyConstraints(); 
+}
 
 };

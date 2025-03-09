@@ -31,50 +31,24 @@ return [
     | Supported: "session"
     |
     */
-// 'defaults' => [
-//     'guard' => 'api',
-//     'passwords' => 'users',
-// ],
-// 'guards' => [
-//     'api' => [
-//         'driver' => 'jwt',
-//         'provider' => 'clients',
-//     ],
-//     'clients' => [
-//         'driver' => 'jwt',
-//         'provider' => 'clients',
-//     ],
-//     'user' => [
-//         'driver' => 'jwt',
-//         'provider' => 'users',
-//     ],
-// ],
-// 'providers' => [
-//     'users' => [
-//         'driver' => 'eloquent',
-//         'model' => App\Models\User::class,
-//     ],
-
-//     'clients' => [
-//         'driver' => 'eloquent',
-//         'model' => App\Models\Client::class,
-//     ],
-// ],
+'defaults' => [
+    'guard' => 'api',
+    'passwords' => 'users',
+],
 
 'guards' => [
-    'clients' => [
-        'driver' => 'jwt', 
-        'provider' => 'clients',
+    'api' => [
+        'driver' => 'jwt',
+        'provider' => 'users',
     ],
 ],
 
 'providers' => [
-    'clients' => [
+    'users' => [
         'driver' => 'eloquent',
-        'model' => App\Models\Client::class,
+        'model' => App\Models\User::class,
     ],
 ],
-
 
     /*
     |--------------------------------------------------------------------------
@@ -93,17 +67,17 @@ return [
     |
     */
 
-    // 'providers' => [
-    //     'users' => [
-    //         'driver' => 'eloquent',
-    //         'model' => env('AUTH_MODEL', App\Models\User::class),
-    //     ],
+    'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
 
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
-    // ],
+    ],
 
     /*
     |--------------------------------------------------------------------------

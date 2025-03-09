@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,19 +19,16 @@ return new class extends Migration {
             $table->decimal('total_weight', 10, 2)->nullable();
             $table->enum('status', ['pending', 'in_transit', 'delivered'])->default('pending');
             $table->string('image')->nullable();
-            $table->foreignId('created_by')->constrained('clients')->onDelete('cascade'); // تعديل هنا
-            $table->foreignId('trip_id')->nullable()->constrained('trips')->onDelete('cascade');
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('trip_id')->nullable();
+            $table->foreign('trip_id')->references('id')->on('trips')->onDelete('cascade');
             $table->timestamps();
+            $table->engine = 'InnoDB';
         });
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::table('ships', function (Blueprint $table) {
-            $table->dropForeign(['created_by']);
-            $table->dropForeign(['trip_id']);
-        });
-
         Schema::dropIfExists('ships');
     }
 };
