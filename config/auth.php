@@ -13,11 +13,8 @@ return [
     |
     */
 
-    'defaults' => [
-        'guard' => 'api',
-        'passwords' => 'users',
-    ],
 
+    
     /*
     |--------------------------------------------------------------------------
     | Authentication Guards
@@ -34,18 +31,24 @@ return [
     | Supported: "session"
     |
     */
+'defaults' => [
+    'guard' => 'api',
+    'passwords' => 'users',
+],
 
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
- 
-        'api' => [
-            'driver' => 'jwt',
-            'provider' => 'users',
-        ],
+'guards' => [
+    'api' => [
+        'driver' => 'jwt',
+        'provider' => 'users',
     ],
+],
+
+'providers' => [
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------
@@ -118,3 +121,4 @@ return [
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
 ];
+

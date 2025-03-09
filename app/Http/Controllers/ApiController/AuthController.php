@@ -1,13 +1,10 @@
 <?php
+
 namespace App\Http\Controllers\ApiController;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Client;
-use App\Models\Ship;
-use App\Models\Trip;
-use App\Models\Booking;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -30,13 +27,14 @@ class AuthController extends Controller
             return response()->json($validated->errors(), 422);
         }
 
+        // ✅ رفع الصورة إذا تم تقديمها
         $imagePath = $request->hasFile('user_image') ? $request->file('user_image')->store('users', 'public') : null;
 
         try {
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($request->password), // 🔹 تأكد من تشفير كلمة المرور
                 'user_image' => $imagePath,
             ]);
 
@@ -50,10 +48,10 @@ class AuthController extends Controller
         }
     }
 
-    // ✅ تسجيل الدخول وإرجاع التوكن مع نوع المستخدم
+    // ✅ تسجيل الدخول وإرجاع التوكن
     public function login(LoginRequest $request)
     {
-        $credentials = $request->validated();
+        $credentials = $request->validated(); // 🔹 استخدم `LoginRequest` للتحقق من البيانات
 
         if (!$token = auth('api')->attempt($credentials)) {
             return response()->json([
@@ -62,17 +60,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $user = auth('api')->user();
-
-        // تحديد نوع المستخدم (client أو user)
-        $userType = Client::where('user_id', $user->id)->exists() ? 'client' : 'user';
-
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
-            'user_type' => $userType
-        ]);
+        return $this->respondWithToken($token);
     }
 
     // ✅ استرجاع بيانات المستخدم الحالي
@@ -88,79 +76,38 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
     }
-
-    // ✅ تسجيل الخروج
-    public function logout()
-    {
-        try {
-            JWTAuth::parseToken()->invalidate();
-            return response()->json(['message' => 'Successfully logged out']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        // ✅ تسجيل الخروج
+        public function logout()
+        {
+            try {
+                JWTAuth::parseToken()->invalidate();
+                return response()->json(['message' => 'Successfully logged out']);
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
         }
-    }
-
-    // ✅ تجديد التوكن
-    public function refresh()
-    {
-        try {
-            $newToken = JWTAuth::parseToken()->refresh();
-            return response()->json([
-                'access_token' => $newToken,
-                'token_type' => 'bearer',
-                'expires_in' => auth('api')->factory()->getTTL() * 60
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        
+        public function refresh()
+        {
+            try {
+                $newToken = JWTAuth::parseToken()->refresh();
+                return response()->json([
+                    'access_token' => $newToken,
+                    'token_type' => 'bearer',
+                    'expires_in' => auth('api')->factory()->getTTL() * 60
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
         }
-    }
-
-    // ✅ جلب جميع العملاء (متاح فقط لـ users)
-    public function getAllClients()
+        
+    // ✅ تنسيق استجابة التوكن
+    protected function respondWithToken($token)
     {
-        $user = auth('api')->user();
-
-        if ($user->type === 'user') {
-            return response()->json(['error' => 'Access denied, read-only user'], 403);
-        }
-
-        $clients = Client::all();
-        return response()->json($clients);
-    }
-
-    // ✅ جلب جميع السفن (متاح للجميع، لكن فقط clients يمكنهم الإضافة والتعديل)
-    public function getAllShips()
-    {
-        $user = auth('api')->user();
-
-        if ($user->type === 'user') {
-            return response()->json(['error' => 'Access denied, read-only user'], 403);
-        }
-
-        return response()->json(Ship::all());
-    }
-
-    // ✅ جلب جميع الرحلات (متاح للجميع، لكن فقط clients يمكنهم الإضافة والتعديل)
-    public function getAllTrips()
-    {
-        $user = auth('api')->user();
-
-        if ($user->type === 'user') {
-            return response()->json(['error' => 'Access denied, read-only user'], 403);
-        }
-
-        return response()->json(Trip::all());
-    }
-
-    // ✅ جلب جميع الحجوزات (متاح للجميع، لكن فقط clients يمكنهم الإضافة والتعديل)
-    public function getAllBookings()
-    {
-        $user = auth('api')->user();
-
-        if ($user->type === 'user') {
-            return response()->json(['error' => 'Access denied, read-only user'], 403);
-        }
-
-        return response()->json(Booking::all());
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60
+        ]);
     }
 }

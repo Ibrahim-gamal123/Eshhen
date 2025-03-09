@@ -10,12 +10,12 @@ class Trip extends Model
     use HasFactory;
 
     protected $fillable = [
-        'From', 'To', 'departure_date', 'arrival_date', 
+        'from', 'to', 'departure_date', 'arrival_date',
         'free_weight', 'status', 'created_by'
     ];
-    public function client()
+    public function user()
     {
-        return $this->belongsTo(Client::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function shipments()
