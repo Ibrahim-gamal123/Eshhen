@@ -14,18 +14,18 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('password');
-            $table->integer('phone');
+            $table->string('phone'); 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('clients');
+        Schema::enableForeignKeyConstraints(); 
     }
+
 };

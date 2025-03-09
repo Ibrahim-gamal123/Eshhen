@@ -6,19 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('booking', function (Blueprint $table) {
-            $table->id();
-            $table->double('price');
-            $table->enum('status' , ['pending','accepted','rejected','completed'])->default('pending');
-            $table->unsignedBigInteger('trip_id');
-            $table->foreign('trip_id')->references('id')->on('trips');
-            $table->timestamps();
-        });
+    
+    
+        public function up(): void
+        {
+            Schema::create('bookings', function (Blueprint $table) {
+                $table->id();
+                $table->double('price');
+                $table->enum('status', ['pending', 'accepted', 'rejected', 'completed'])->default('pending');
+                $table->foreignId('trip_id')->constrained('trips')->onDelete('cascade');
+                $table->foreignId('ship_id')->constrained('ships')->onDelete('cascade');
+                $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
+                $table->timestamps();
+            });
+        
+    
     }
 
     /**
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('booking');
+        Schema::dropIfExists('bookings');
     }
 };
