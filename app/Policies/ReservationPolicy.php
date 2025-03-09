@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Reservation;
+use App\Models\Reservation; // Ensure this class exists in the specified namespace
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 

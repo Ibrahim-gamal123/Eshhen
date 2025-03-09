@@ -4,20 +4,37 @@ namespace App\Traits;
 
 trait ApiResponseTrait
 {
-    public function successResponse($data, $message = "Success", $status = 200)
+    /**
+     * Success response.
+     *
+     * @param  mixed   $data
+     * @param  string  $message
+     * @param  int     $statusCode
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function successResponse($data, $message = 'Operation successful', $statusCode = 200)
     {
         return response()->json([
-            'status' => 'success',
+            'status' => true,
             'message' => $message,
-            'data' => $data
-        ], $status);
+            'data' => $data,
+        ], $statusCode);
     }
 
-    public function errorResponse($message = "Error", $status = 400)
+    /**
+     * Error response.
+     *
+     * @param  string  $message
+     * @param  int     $statusCode
+     * @param  mixed   $errors
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function errorResponse($message = 'Operation failed', $statusCode = 400, $errors = null)
     {
         return response()->json([
-            'status' => 'error',
-            'message' => $message
-        ], $status);
+            'status' => false,
+            'message' => $message,
+            'errors' => $errors,
+        ], $statusCode);
     }
 }

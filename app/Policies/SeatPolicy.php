@@ -2,7 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\Seat;
+use App\Models\Seat; // Ensure that the Seat class exists in this namespace or update to the correct namespace
+// If the Seat class is in a different namespace, update the import statement accordingly
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 

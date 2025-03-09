@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Driver;
+use App\Models\Driver; // Ensure that the Driver class exists in this namespace
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
